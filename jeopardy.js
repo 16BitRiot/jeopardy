@@ -25,14 +25,29 @@ let categoryIDs = [];
 let testObject = {};
 let categoryClues = {};
 const responseData = {};
+const rows = 5;
+const columns = 5;
 
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
 const div = document.createElement('div');
+const br = document.createElement('br');
 const tHead = document.createElement('thead');
 const tBody = document.createElement('tbody');
 const tr = document.createElement('tr');
 const td = document.createElement('td');
+let gameBoard = document.getElementById('gameboard');
+function catDisplay (){
+    for (let cat of categories){
+        console.log(cat);
+        
+    }};
+function questionBox() {
+    let tempbox = tr; 
+    tempbox.append('?'); 
+    tempbox.append(br); 
+    tHead.append(tempbox); 
+    gameBoard.append(tHead);}
 // const  = document.createElement('');
 
 
@@ -94,7 +109,9 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    
+    const emptyRow = Array.apply('test', Array(rows));
+    tHead.appendChild(emptyRow);
+    console.log(getCategory(22));
 }
 
 

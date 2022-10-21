@@ -5,3 +5,35 @@
   #8d2ab5
   #74119c
 */
+
+body {
+  background-color: #060ce9;
+}
+
+#gameboard {
+  background-color: #115ff4;
+  width: 700px;
+  height: 700px;
+  margin: auto;
+}
+
+.box {
+  background-color: #115ff4;
+  height: 70;
+  width: 70;
+  text-align: center;
+}
+
+td tr {
+  background-color: #115ff4;
+  height: 70px;
+  width: 70px;
+  text-align: center;
+  border: 6px;
+  border-color: black;
+}
+
+thead {
+  height: 70px;
+  width: 700em;
+}
