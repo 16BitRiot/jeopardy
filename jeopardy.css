@@ -24,7 +24,7 @@ body {
   text-align: center;
 }
 
-td tr {
+tr {
   background-color: #115ff4;
   height: 70px;
   width: 70px;
@@ -33,7 +33,28 @@ td tr {
   border-color: black;
 }
 
+td {
+  text-decoration: white;
+  height: 70px;
+  width: 70px;
+  text-align: center;
+}
+
 thead {
   height: 70px;
   width: 700em;
+}
+
+.catrow {
+  display: inline;
+}
+
+table {
+  border-collapse: collapse;
+  height: 70rem;
+  width: 70rem;
+}
+
+caption {
+  text-align: left;
 }

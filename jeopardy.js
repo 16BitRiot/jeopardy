@@ -32,22 +32,30 @@ const columns = 5;
 function numGen() { return Math.floor(Math.random() * 90) };
 const div = document.createElement('div');
 const br = document.createElement('br');
-const tHead = document.createElement('thead');
+let catRow = document.getElementById("catRow");
+// const tHead = document.createElement('thead');
 const tBody = document.createElement('tbody');
-const tr = document.createElement('tr');
-const td = document.createElement('td');
+// let tr = document.createElement('tr');
+// let td = document.createElement('td');
 let gameBoard = document.getElementById('gameboard');
-function catDisplay (){
-    for (let cat of categories){
-        console.log(cat);
-        
-    }};
+function catDisplay() {
+    let tHead = document.createElement('thead');
+    for (let cat of categories) {
+        let tr = document.createElement('tr');
+        let td = document.createElement('td');
+        td.innerText = cat;
+        tr.appendChild(td);
+        catRow.append(tr);
+    }
+};
+
 function questionBox() {
-    let tempbox = tr; 
-    tempbox.append('?'); 
-    tempbox.append(br); 
-    tHead.append(tempbox); 
-    gameBoard.append(tHead);}
+    let tempbox = tr;
+    tempbox.append('?');
+    tempbox.append(br);
+    tHead.append(tempbox);
+    gameBoard.append(tHead);
+}
 // const  = document.createElement('');
 
 
