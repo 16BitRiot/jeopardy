@@ -84,6 +84,7 @@ async function getApi() {
         }
     }
     NUM_CATEGORIES();
+    catDisplay();
 }
 getApi()
 

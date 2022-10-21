@@ -10,13 +10,6 @@ body {
   background-color: #060ce9;
 }
 
-#gameboard {
-  background-color: #115ff4;
-  width: 700px;
-  height: 700px;
-  margin: auto;
-}
-
 .box {
   background-color: #115ff4;
   height: 70;
@@ -26,10 +19,10 @@ body {
 
 tr {
   background-color: #115ff4;
-  height: 70px;
-  width: 70px;
   text-align: center;
-  border: 6px;
+  padding: 10px;
+  color: white;
+  border-style: solid;
   border-color: black;
 }
 
@@ -38,21 +31,23 @@ td {
   height: 70px;
   width: 70px;
   text-align: center;
+  table-layout: auto;
 }
 
 thead {
-  height: 70px;
-  width: 700em;
+  display: flex;
 }
 
 .catrow {
   display: inline;
 }
 
-table {
+.table {
   border-collapse: collapse;
-  height: 70rem;
-  width: 70rem;
+  width: max-content;
+  display: inline;
+  /* height: 70rem;
+  width: 70rem; */
 }
 
 caption {
