@@ -22,8 +22,11 @@ tr {
   text-align: center;
   padding: 10px;
   color: white;
+  text-transform: capitalize;
   border-style: solid;
   border-color: black;
+  display: flex;
+  /* display: block; */
 }
 
 td {
@@ -32,10 +35,15 @@ td {
   width: 70px;
   text-align: center;
   table-layout: auto;
+  padding: 10px;
+  max-width: 92;
+  grid-row-end: auto;
+  /* display: block; */
 }
 
 thead {
   display: flex;
+  table-layout: fixed;
 }
 
 .catrow {
@@ -45,11 +53,29 @@ thead {
 .table {
   border-collapse: collapse;
   width: max-content;
+  table-layout: fixed;
   display: inline;
-  /* height: 70rem;
-  width: 70rem; */
+  overflow: auto;
+  border: none;
+}
+
+tbody {
+  /* display: flex; */
+  table-layout: fixed;
+}
+
+div {
+  display: flex;
+  width: 605.55px;
 }
 
 caption {
-  text-align: left;
+  text-decoration: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: large;
+}
+
+
+.bigTable {
+  max-width: 30px;
 }

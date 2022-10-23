@@ -25,39 +25,25 @@ let categoryIDs = [];
 let testObject = {};
 let categoryClues = {};
 const responseData = {};
-const rows = 5;
+const rows = 6;
 const columns = 5;
 
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
-const div = document.createElement('div');
 const br = document.createElement('br');
 let catRow = document.getElementById("catRow");
-// const tHead = document.createElement('thead');
 const tBody = document.createElement('tbody');
-// let tr = document.createElement('tr');
-// let td = document.createElement('td');
-let gameBoard = document.getElementById('gameboard');
+let gameBoard = document.getElementById('gameBoardBody');
+
 function catDisplay() {
-    let tHead = document.createElement('thead');
+    let tr = document.createElement('tr');
     for (let cat of categories) {
-        let tr = document.createElement('tr');
         let td = document.createElement('td');
         td.innerText = cat;
         tr.appendChild(td);
-        catRow.append(tr);
     }
+    catRow.append(tr);
 };
-
-function questionBox() {
-    let tempbox = tr;
-    tempbox.append('?');
-    tempbox.append(br);
-    tHead.append(tempbox);
-    gameBoard.append(tHead);
-}
-// const  = document.createElement('');
-
 
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
@@ -68,7 +54,7 @@ async function getApi() {
      */
     function NUM_CATEGORIES() {
         // **********NEEDS DUPLICATE CHECKER
-        for (let x = 0; x < 5; x++) {
+        for (let x = 0; x < rows; x++) {
             // store new random # in variable
             const tempNo = numGen();
             // pull random catagory with variable #
@@ -85,6 +71,7 @@ async function getApi() {
     }
     NUM_CATEGORIES();
     catDisplay();
+    makeBody();
 }
 getApi()
 
@@ -118,18 +105,24 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    const emptyRow = Array.apply('test', Array(rows));
-    tHead.appendChild(emptyRow);
-    console.log(getCategory(22));
+
 }
 
-
-
-
-
-
-
-
+function makeBody() {
+    for (let z = 0; z < columns; z++) {
+        let tr = document.createElement('tr');
+        for (let i of categoryIDs) {
+            getCategory(i);
+            let td = document.createElement('td');
+            td.id = `${z}.${i}`
+            td.innerText = '?';
+            td.addEventListener('click', function () { handleClick(this) });
+            tr.appendChild(td);
+        }
+        tr.id = `row ${z}`;
+        gameBoard.append(tr);
+    }
+};
 
 /** Handle clicking on a clue: show the question or answer.
  *
@@ -139,7 +132,9 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-function handleClick(evt) {
+function handleClick() {
+    let evt = event.target;
+    console.log(evt.id);
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
