@@ -28,6 +28,8 @@ const responseData = {};
 const rows = 6;
 const columns = 5;
 
+let catOne = {}
+
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
 const br = document.createElement('br');
@@ -35,6 +37,7 @@ let catRow = document.getElementById("catRow");
 const tBody = document.createElement('tbody');
 let gameBoard = document.getElementById('gameBoardBody');
 
+// function to create Catagores display row
 function catDisplay() {
     let tr = document.createElement('tr');
     for (let cat of categories) {
@@ -44,6 +47,28 @@ function catDisplay() {
     }
     catRow.append(tr);
 };
+
+// build default gameboard body
+function makeBody() {
+    let classNo = 100;
+    for (let z = 0; z < columns; z++) {
+        let tr = document.createElement('tr');
+        for (let i of categoryIDs) {
+            let td = document.createElement('td');
+            td.id = `${i}`;
+            td.innerText = classNo;
+            // td.classList.add(classNo);
+            // td.addEventListener('click', function () { handleClick() });
+            tr.appendChild(td);
+        }
+        tr.id = `row ${z}`;
+        // tr.classList.add(classNo);
+        tr.addEventListener('click', function () { handleClick() });
+        classNo = classNo + 100;
+        gameBoard.append(tr);
+    }
+};
+
 
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
@@ -87,14 +112,18 @@ getApi()
 *   ]
 */
 
-async function getCategory(catId) {
-    // pull category based on handed in value
-    let response2 = await axios.get(`https://jservice.io/api/category?id=${catId}`);
-    // clue object placed in variable
-    const clues = response2.data.clues;
-    // insert the title as key and clue array as value
-    return categoryClues[response2.data.title] = clues;
-}
+
+// async function getCategory(catId) {
+//     // pull category based on handed in value
+//     let response2 = await axios.get(`https://jservice.io/api/category?id=${catId}`);
+//     // clue object placed in variable
+//     const clues = response2.data.clues;
+//     // insert the title as key and clue array as value
+//     tryClues = clues;
+//     return categoryClues[response2.data.title] = clues;
+// }
+
+
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
  *
@@ -105,24 +134,10 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-
+    // see makeboard function
 }
 
-function makeBody() {
-    for (let z = 0; z < columns; z++) {
-        let tr = document.createElement('tr');
-        for (let i of categoryIDs) {
-            getCategory(i);
-            let td = document.createElement('td');
-            td.id = `${z}.${i}`
-            td.innerText = '?';
-            td.addEventListener('click', function () { handleClick(this) });
-            tr.appendChild(td);
-        }
-        tr.id = `row ${z}`;
-        gameBoard.append(tr);
-    }
-};
+
 
 /** Handle clicking on a clue: show the question or answer.
  *
@@ -132,10 +147,43 @@ function makeBody() {
  * - if currently "answer", ignore click
  * */
 
+let qAndA = {};
+
 function handleClick() {
+    let insertQuest = '';
+    let insertAnswer = '';
+    const showingClass = document.getElementsByClassName('showing');
     let evt = event.target;
+    const noClass = '';
     console.log(evt.id);
+    console.log(evt);
+    let clickValue = evt.className;
+    let clickID = evt.id;
+    // debugger
+    if (clickValue === noClass){
+        getCategory2(clickID, clickValue);
+        async function getCategory2(catId, value) {
+            let response2 = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
+            let catVal = response2.data;
+            let catVal2 = catVal[0];
+            console.log(catVal2.question);
+            let questionString = JSON.stringify(catVal2.question);
+            Object.assign(qAndA, questionString);
+            console.log(catVal2.answer);
+            insertQuest = catVal2.question;
+            evt.innerText = insertQuest;
+            evt.classList.add('showing');
+            // evt.classList.append = 'showing';
+            clickValue = 'showing';
+        }
+    }
+    // if (clickValue === showingClass){
+    //     console.log('oh');
+    // }
+
 }
+
+
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
