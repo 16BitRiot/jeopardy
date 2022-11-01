@@ -22,13 +22,11 @@
 // Variables
 let categories = [];
 let categoryIDs = [];
-let testObject = {};
-let categoryClues = {};
-const responseData = {};
 const rows = 6;
 const columns = 5;
+let jBoard = [];
+let anserVals = {};
 
-let catOne = {}
 
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
@@ -50,23 +48,37 @@ function catDisplay() {
 
 // build default gameboard body
 function makeBody() {
+        // Make Javascript Body
+        function makeJboard() {
+
+            for (let i = 0; i < columns; i++) {
+                const emptyRow = Array.apply(null, Array(rows));
+                jBoard.push(emptyRow);
+            }
+            return jBoard;
+        }
+        makeJboard()
+    
     let classNo = 100;
     for (let z = 0; z < columns; z++) {
         let tr = document.createElement('tr');
+        let counter = 0;
         for (let i of categoryIDs) {
             let td = document.createElement('td');
-            td.id = `${i}`;
+            jBoard[z][counter] = classNo;
+            td.id = counter;
             td.innerText = classNo;
-            // td.classList.add(classNo);
-            // td.addEventListener('click', function () { handleClick() });
             tr.appendChild(td);
+            counter = counter + 1;
         }
-        tr.id = `row ${z}`;
+
+        tr.id = z;
         // tr.classList.add(classNo);
-        tr.addEventListener('click', function () { handleClick() });
+        tr.addEventListener('click', function (e) { handleClick(e) });
         classNo = classNo + 100;
         gameBoard.append(tr);
     }
+
 };
 
 
@@ -147,40 +159,54 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-let qAndA = {};
+function handleClick(e) {
 
-function handleClick() {
-    let insertQuest = '';
-    let insertAnswer = '';
-    const showingClass = document.getElementsByClassName('showing');
     let evt = event.target;
-    const noClass = '';
-    console.log(evt.id);
+    const rowSelect = e.currentTarget;
+    const x = rowSelect.id;
+    const y = evt.cellIndex;
+    let jBoardSpot = jBoard[x][y];
+    const clickValue = evt.className;
+    const clickID = evt.id;
     console.log(evt);
-    let clickValue = evt.className;
-    let clickID = evt.id;
     // debugger
-    if (clickValue === noClass){
-        getCategory2(clickID, clickValue);
-        async function getCategory2(catId, value) {
-            let response2 = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
-            let catVal = response2.data;
-            let catVal2 = catVal[0];
-            console.log(catVal2.question);
-            let questionString = JSON.stringify(catVal2.question);
-            Object.assign(qAndA, questionString);
-            console.log(catVal2.answer);
-            insertQuest = catVal2.question;
-            evt.innerText = insertQuest;
-            evt.classList.add('showing');
-            // evt.classList.append = 'showing';
-            clickValue = 'showing';
-        }
+
+    if (isNaN(jBoardSpot) === true){
+        console.log('give anser=we')
     }
-    // if (clickValue === showingClass){
-    //     console.log('oh');
+    // will run if hte back end is a number
+    if (isNaN(jBoardSpot) === false){
+        console.log(jBoardSpot);
+        getQuestion(categoryIDs[y], jBoardSpot)
+        async function getQuestion(catId, value){
+            let getQuestion = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
+            let questionData = getQuestion.data;
+            let questionComplete = questionData[0];
+            evt.innerText = questionComplete.question;
+            jBoard[x][y] = 'showing';
+            evt.classList.add('showing')
+            debugger
+        } 
+    }
+
+    // if (isNaN(jBoardSpot) === true){
+    //     console.log(jBoardSpot);
     // }
 
+    // if (clickValue === noClass) {
+    //     getCategory2(clickID, clickValue);
+    //     async function getCategory2(catId, value) {
+    //         let response2 = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
+    //         let catVal = response2.data;
+    //         let catVal2 = catVal[0];
+    //         console.log(catVal2.question);
+    //         console.log(catVal2.answer);
+    //         insertQuest = catVal2.question;
+    //         evt.innerText = insertQuest;
+    //         evt.classList.add('showing');
+    //         clickValue = 'showing';
+    //     }
+    // }
 }
 
 
