@@ -1,23 +1,4 @@
-// categories is the main data structure for the app; it looks like this:
-
-//  [
-//    { title: "Math",
-//      clues: [
-//        {question: "2+2", answer: 4, showing: null},
-//        {question: "1+1", answer: 2, showing: null}
-//        ...
-//      ],
-//    },
-//    { title: "Literature",
-//      clues: [
-//        {question: "Hamlet Author", answer: "Shakespeare", showing: null},
-//        {question: "Bell Jar Author", answer: "Plath", showing: null},
-//        ...
-//      ],
-//    },
-//    ...
-//  ]
-
+// Jeopardy project Nov 2022
 
 // Variables
 let categories = [];
@@ -50,7 +31,6 @@ function catDisplay() {
 function makeBody() {
         // Make Javascript Body
         function makeJboard() {
-
             for (let i = 0; i < columns; i++) {
                 const emptyRow = Array.apply(null, Array(rows));
                 jBoard.push(emptyRow);
@@ -58,7 +38,7 @@ function makeBody() {
             return jBoard;
         }
         makeJboard()
-    
+    // make HTML Body
     let classNo = 100;
     for (let z = 0; z < columns; z++) {
         let tr = document.createElement('tr');
@@ -71,24 +51,17 @@ function makeBody() {
             tr.appendChild(td);
             counter = counter + 1;
         }
-
         tr.id = z;
-        // tr.classList.add(classNo);
         tr.addEventListener('click', function (e) { handleClick(e) });
         classNo = classNo + 100;
         gameBoard.append(tr);
     }
-
 };
 
-
+// First pull from API for categories and basic info
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
     console.log(response);
-    /** Get NUM_CATEGORIES random category from API.
-     *
-     * Returns array of category ids
-     */
     function NUM_CATEGORIES() {
         // **********NEEDS DUPLICATE CHECKER
         for (let x = 0; x < rows; x++) {
@@ -106,107 +79,45 @@ async function getApi() {
             categories.push([catagory.title]);
         }
     }
+    // call functions to  Set board with categories and body
     NUM_CATEGORIES();
     catDisplay();
     makeBody();
 }
+// Run GetApi on page load
 getApi()
 
-/** Return object with data about a category:
-*
-*  Returns { title: "Math", clues: clue-array }
-*
-* Where clue-array is:
-*   [
-*      {question: "Hamlet Author", answer: "Shakespeare", showing: null},
-*      {question: "Bell Jar Author", answer: "Plath", showing: null},
-*      ...
-*   ]
-*/
-
-
-// async function getCategory(catId) {
-//     // pull category based on handed in value
-//     let response2 = await axios.get(`https://jservice.io/api/category?id=${catId}`);
-//     // clue object placed in variable
-//     const clues = response2.data.clues;
-//     // insert the title as key and clue array as value
-//     tryClues = clues;
-//     return categoryClues[response2.data.title] = clues;
-// }
-
-
-
-/** Fill the HTML table#jeopardy with the categories & cells for questions.
- *
- * - The <thead> should be filled w/a <tr>, and a <td> for each category
- * - The <tbody> should be filled w/NUM_QUESTIONS_PER_CAT <tr>s,
- *   each with a question for each category in a <td>
- *   (initally, just show a "?" where the question/answer would go.)
- */
-
-async function fillTable() {
-    // see makeboard function
-}
-
-
-
-/** Handle clicking on a clue: show the question or answer.
- *
- * Uses .showing property on clue to determine what to show:
- * - if currently null, show question & set .showing to "question"
- * - if currently "question", show answer & set .showing to "answer"
- * - if currently "answer", ignore click
- * */
-
+// Click event
 function handleClick(e) {
-
+    // in function variables
     let evt = event.target;
     const rowSelect = e.currentTarget;
     const x = rowSelect.id;
     const y = evt.cellIndex;
     let jBoardSpot = jBoard[x][y];
-    const clickValue = evt.className;
-    const clickID = evt.id;
-    console.log(evt);
-    // debugger
-
+    const answerKey = `${x}${y}`;
+// if Javascript board value hold non-number, load answer and remove listening event from cell
+// ********click event needs to be set to TD instead of TR
     if (isNaN(jBoardSpot) === true){
-        console.log('give anser=we')
+        evt.innerText = anserVals.answerKey;
+        jBoard[x][y] = 'closed';
+        evt.removeEventListener('click', handleClick);
     }
-    // will run if hte back end is a number
+// if the javascript board value holds a number, then replace innertext with Question
     if (isNaN(jBoardSpot) === false){
-        console.log(jBoardSpot);
         getQuestion(categoryIDs[y], jBoardSpot)
         async function getQuestion(catId, value){
             let getQuestion = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
             let questionData = getQuestion.data;
             let questionComplete = questionData[0];
+            // ***** Add check here for empty or bad data
             evt.innerText = questionComplete.question;
             jBoard[x][y] = 'showing';
             evt.classList.add('showing')
-            debugger
+            const objAnswer = {answerKey: questionComplete.answer};
+            Object.assign(anserVals, objAnswer);
         } 
     }
-
-    // if (isNaN(jBoardSpot) === true){
-    //     console.log(jBoardSpot);
-    // }
-
-    // if (clickValue === noClass) {
-    //     getCategory2(clickID, clickValue);
-    //     async function getCategory2(catId, value) {
-    //         let response2 = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
-    //         let catVal = response2.data;
-    //         let catVal2 = catVal[0];
-    //         console.log(catVal2.question);
-    //         console.log(catVal2.answer);
-    //         insertQuest = catVal2.question;
-    //         evt.innerText = insertQuest;
-    //         evt.classList.add('showing');
-    //         clickValue = 'showing';
-    //     }
-    // }
 }
 
 
