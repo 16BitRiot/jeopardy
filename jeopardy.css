@@ -8,6 +8,7 @@
 
 body {
   background-color: #060ce9;
+  align-self: start;
 }
 
 .box {
@@ -48,6 +49,7 @@ thead {
 
 .catrow {
   display: inline;
+  padding-left: 12rem;
 }
 
 .table {
@@ -60,13 +62,11 @@ thead {
 }
 
 tbody {
-  /* display: flex; */
   table-layout: fixed;
 }
 
 div {
   display: flex;
-  width: 605.55px;
 }
 
 caption {
@@ -78,8 +78,10 @@ caption {
 
 .bigTable {
   max-width: 30px;
+  padding: 10px;
+  border-left: 25em;
 }
 
-.showing {
-  
+.wrapper {
+  text-align: center;
 }

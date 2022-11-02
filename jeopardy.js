@@ -13,10 +13,10 @@ let anserVals = {};
 function numGen() { return Math.floor(Math.random() * 90) };
 const br = document.createElement('br');
 let catRow = document.getElementById("catRow");
-const tBody = document.createElement('tbody');
 let gameBoard = document.getElementById('gameBoardBody');
 
-// function to create Catagores display row
+// functions
+// create Catagores display row
 function catDisplay() {
     let tr = document.createElement('tr');
     for (let cat of categories) {
@@ -29,15 +29,15 @@ function catDisplay() {
 
 // build default gameboard body
 function makeBody() {
-        // Make Javascript Body
-        function makeJboard() {
-            for (let i = 0; i < columns; i++) {
-                const emptyRow = Array.apply(null, Array(rows));
-                jBoard.push(emptyRow);
-            }
-            return jBoard;
+    // Make Javascript Body
+    function makeJboard() {
+        for (let i = 0; i < columns; i++) {
+            const emptyRow = Array.apply(null, Array(rows));
+            jBoard.push(emptyRow);
         }
-        makeJboard()
+        return jBoard;
+    }
+    makeJboard()
     // make HTML Body
     let classNo = 100;
     for (let z = 0; z < columns; z++) {
@@ -52,6 +52,7 @@ function makeBody() {
             counter = counter + 1;
         }
         tr.id = z;
+        // e is passed in here to grab event data and is used in the handleClick function
         tr.addEventListener('click', function (e) { handleClick(e) });
         classNo = classNo + 100;
         gameBoard.append(tr);
@@ -61,21 +62,37 @@ function makeBody() {
 // First pull from API for categories and basic info
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
-    console.log(response);
     function NUM_CATEGORIES() {
         // **********NEEDS DUPLICATE CHECKER
         for (let x = 0; x < rows; x++) {
             // store new random # in variable
-            const tempNo = numGen();
+            let tempNo = numGen();
             // pull random catagory with variable #
-            const catagory = response.data[tempNo];
+            let catagory = response.data[tempNo];
+            debugger
+
+
+
+            // loop for dupe checker
+            // for (let i of categoryIDs){console.log(i)}
+
+            // check that categories have enough clues
+            // cluesChecker(catagory);
+            // if (catagory.clues_count < 6) {
+            //     let tempNo = numGen();
+            //     catagory = response.data[tempNo];
+            // }
+
+
+
+
             // push values into catagory and ID arrays
             function getCategoryIds() {
-                // Not sure if this should be nested?
                 categoryIDs.push([catagory.id]);
                 return categoryIDs;
             }
             getCategoryIds();
+            // add titles to categories array for category display
             categories.push([catagory.title]);
         }
     }
@@ -96,27 +113,30 @@ function handleClick(e) {
     const y = evt.cellIndex;
     let jBoardSpot = jBoard[x][y];
     const answerKey = `${x}${y}`;
-// if Javascript board value hold non-number, load answer and remove listening event from cell
-// ********click event needs to be set to TD instead of TR
-    if (isNaN(jBoardSpot) === true){
+    // if Javascript board value hold non-number, load answer and remove listening event from cell
+    // ********click event needs to be set to TD instead of TR
+    if (jBoardSpot === null) {
+        return;
+    }
+    if (isNaN(jBoardSpot) === true) {
         evt.innerText = anserVals.answerKey;
-        jBoard[x][y] = 'closed';
+        jBoard[x][y] = null;
         evt.removeEventListener('click', handleClick);
     }
-// if the javascript board value holds a number, then replace innertext with Question
-    if (isNaN(jBoardSpot) === false){
+    // if the javascript board value holds a number, then replace innertext with Question
+    if (isNaN(jBoardSpot) === false) {
         getQuestion(categoryIDs[y], jBoardSpot)
-        async function getQuestion(catId, value){
+        async function getQuestion(catId, value) {
             let getQuestion = await axios.get(`https://jservice.io/api/clues?value=${value}&category=${catId}`);
             let questionData = getQuestion.data;
             let questionComplete = questionData[0];
             // ***** Add check here for empty or bad data
             evt.innerText = questionComplete.question;
             jBoard[x][y] = 'showing';
-            evt.classList.add('showing')
-            const objAnswer = {answerKey: questionComplete.answer};
+            evt.classList.add('showing');
+            const objAnswer = { answerKey: questionComplete.answer };
             Object.assign(anserVals, objAnswer);
-        } 
+        }
     }
 }
 
