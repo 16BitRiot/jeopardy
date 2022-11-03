@@ -19,17 +19,6 @@ let gameBoard = document.getElementById('gameBoardBody');
 
 // functions
 
-// make index array
-// function getIndexArray() {
-//     indexArray.push(Array.apply(null, Array(rows)));
-//     for (let i = 0; i < rows; i++) {
-//         indexArray[i] = numGen();
-//     }
-//     for (let i of indexArray) {
-//         console.log(bogusArray);
-//     }
-// }
-// getIndexArray();
 // create Catagores display row
 function catDisplay() {
     let tr = document.createElement('tr');
@@ -77,11 +66,9 @@ function makeBody() {
 // First pull from API for categories and basic info
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
-    console.log(response);
     function NUM_CATEGORIES() {
         for (let x = 0; x < 25; x++) {
             if (indexArray.length < rows) {
-                // debugger
                 let tempIndex = numGen();
                 let catagory1 = response.data[tempIndex];
                 console.log(catagory1);
@@ -117,19 +104,17 @@ getApi()
 function handleClick(e) {
     // in function variables
     let evt = event.target;
-    const rowSelect = e.currentTarget;
-    debugger
-    const x = rowSelect.id;
-    const y = evt.cellIndex;
+    let rowSelect = e.currentTarget;
+    let x = e.path[1].id;
+    let y = e.path[0].id;
+    let XY = x+y;
     let jBoardSpot = jBoard[x][y];
-    const answerKey = `${x}${y}`;
     // if Javascript board value hold non-number, load answer and remove listening event from cell
-    // ********click event needs to be set to TD instead of TR
     if (jBoardSpot === null) {
         return;
     }
     if (isNaN(jBoardSpot) === true) {
-        evt.innerText = anserVals.answerKey;
+        evt.innerText = anserVals[XY];
         jBoard[x][y] = null;
         evt.removeEventListener('click', handleClick);
     }
@@ -144,41 +129,8 @@ function handleClick(e) {
             evt.innerText = questionComplete.question;
             jBoard[x][y] = 'showing';
             evt.classList.add('showing');
-            const objAnswer = { answerKey: questionComplete.answer };
+            const objAnswer = { [XY]: questionComplete.answer };
             Object.assign(anserVals, objAnswer);
         }
     }
 }
-
-
-
-/** Wipe the current Jeopardy board, show the loading spinner,
- * and update the button used to fetch data.
- */
-
-function showLoadingView() {
-
-}
-
-/** Remove the loading spinner and update the button used to fetch data. */
-
-function hideLoadingView() {
-}
-
-/** Start game:
- *
- * - get random category Ids
- * - get data for each category
- * - create HTML table
- * */
-
-async function setupAndStart() {
-}
-
-/** On click of start / restart button, set up game. */
-
-// TODO
-
-/** On page load, add event handler for clicking clues */
-
-// TODO
