@@ -7,7 +7,9 @@ const rows = 6;
 const columns = 5;
 let jBoard = [];
 let anserVals = {};
-
+let indexArray = [];
+let bogusArray = [7, 80, 8, 62, 9, 87];
+let testArray = [];
 
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
@@ -16,6 +18,18 @@ let catRow = document.getElementById("catRow");
 let gameBoard = document.getElementById('gameBoardBody');
 
 // functions
+
+// make index array
+// function getIndexArray() {
+//     indexArray.push(Array.apply(null, Array(rows)));
+//     for (let i = 0; i < rows; i++) {
+//         indexArray[i] = numGen();
+//     }
+//     for (let i of indexArray) {
+//         console.log(bogusArray);
+//     }
+// }
+// getIndexArray();
 // create Catagores display row
 function catDisplay() {
     let tr = document.createElement('tr');
@@ -48,12 +62,13 @@ function makeBody() {
             jBoard[z][counter] = classNo;
             td.id = counter;
             td.innerText = classNo;
+            td.addEventListener('click', function (e) { handleClick(e) });
             tr.appendChild(td);
             counter = counter + 1;
         }
         tr.id = z;
         // e is passed in here to grab event data and is used in the handleClick function
-        tr.addEventListener('click', function (e) { handleClick(e) });
+        // tr.addEventListener('click', function (e) { handleClick(e) });
         classNo = classNo + 100;
         gameBoard.append(tr);
     }
@@ -62,38 +77,32 @@ function makeBody() {
 // First pull from API for categories and basic info
 async function getApi() {
     let response = await axios.get(`http://jservice.io/api/categories?count=100`);
+    console.log(response);
     function NUM_CATEGORIES() {
-        // **********NEEDS DUPLICATE CHECKER
+        for (let x = 0; x < 25; x++) {
+            if (indexArray.length < rows) {
+                // debugger
+                let tempIndex = numGen();
+                let catagory1 = response.data[tempIndex];
+                console.log(catagory1);
+                if (catagory1.clues_count > 6) {
+                    if (indexArray.indexOf(tempIndex) === -1) {
+                        indexArray.push(tempIndex);
+                    }
+                }
+            }
+        }
         for (let x = 0; x < rows; x++) {
-            // store new random # in variable
-            let tempNo = numGen();
-            // pull random catagory with variable #
-            let catagory = response.data[tempNo];
-            debugger
-
-
-
-            // loop for dupe checker
-            // for (let i of categoryIDs){console.log(i)}
-
-            // check that categories have enough clues
-            // cluesChecker(catagory);
-            // if (catagory.clues_count < 6) {
-            //     let tempNo = numGen();
-            //     catagory = response.data[tempNo];
-            // }
-
-
-
-
+            let indexID = indexArray[x];
+            let catagory2 = response.data[indexID];
             // push values into catagory and ID arrays
             function getCategoryIds() {
-                categoryIDs.push([catagory.id]);
+                categoryIDs.push([catagory2.id]);
                 return categoryIDs;
             }
             getCategoryIds();
             // add titles to categories array for category display
-            categories.push([catagory.title]);
+            categories.push([catagory2.title]);
         }
     }
     // call functions to  Set board with categories and body
@@ -109,6 +118,7 @@ function handleClick(e) {
     // in function variables
     let evt = event.target;
     const rowSelect = e.currentTarget;
+    debugger
     const x = rowSelect.id;
     const y = evt.cellIndex;
     let jBoardSpot = jBoard[x][y];
