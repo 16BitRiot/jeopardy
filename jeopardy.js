@@ -8,8 +8,6 @@ const columns = 5;
 let jBoard = [];
 let anserVals = {};
 let indexArray = [];
-let bogusArray = [7, 80, 8, 62, 9, 87];
-let testArray = [];
 
 // Producers and Creators
 function numGen() { return Math.floor(Math.random() * 90) };
@@ -102,11 +100,14 @@ getApi()
 
 // Click event
 function handleClick(e) {
+    // debugger
+
     // in function variables
-    let evt = event.target;
+    let evt = e.target;
     let rowSelect = e.currentTarget;
-    let x = e.path[1].id;
-    let y = e.path[0].id;
+    // *****x and y are not grabbing actual coordinates******
+    let x = Number(e.target.parentNode.id);
+    let y = Number(e.target.id);
     let XY = x+y;
     let jBoardSpot = jBoard[x][y];
     // if Javascript board value hold non-number, load answer and remove listening event from cell
